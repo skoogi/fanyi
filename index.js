@@ -13,7 +13,7 @@ module.exports = function (word, options, callback) {
   // say it
   try {
     if (!process.env.CI) {
-      require('say').speak(word, isChinese(word) ? 'Ting-Ting' : null);
+      // require('say').speak(word, isChinese(word) ? 'Ting-Ting' : null);
     }
   } catch (e) {
     // do nothing
@@ -22,7 +22,7 @@ module.exports = function (word, options, callback) {
   let count = 0;
   const callbackAll = () => {
     count += 1;
-    if (count >= 3) {
+    if (count >= 1) {
       spinner.stop();
       callback && callback();
     }
@@ -31,17 +31,17 @@ module.exports = function (word, options, callback) {
   word = encodeURIComponent(word);
 
   // iciba
-  request.get(SOURCE.iciba.replace('${word}', word), function (error, response, body) {
-    if (!error && response.statusCode == 200) {
-      parseString(body, function (err, result) {
-        if (err) {
-          return;
-        }
-        print.iciba(result.dict, options);
-      });
-    }
-    callbackAll();
-  });
+  // request.get(SOURCE.iciba.replace('${word}', word), function (error, response, body) {
+  //   if (!error && response.statusCode == 200) {
+  //     parseString(body, function (err, result) {
+  //       if (err) {
+  //         return;
+  //       }
+  //       print.iciba(result.dict, options);
+  //     });
+  //   }
+  //   callbackAll();
+  // });
 
   // youdao
   request.get(SOURCE.youdao.replace('${word}', word), function (error, response, body) {
@@ -57,21 +57,21 @@ module.exports = function (word, options, callback) {
   });
 
   // dictionaryapi
-  request.get(SOURCE.dictionaryapi.replace('${word}', word), { timeout: 6000 }, function (
-    error,
-    response,
-    body,
-  ) {
-    if (error) {
-      return callbackAll();
-    }
-    if (response.statusCode == 200) {
-      parseString(body, function (err, result) {
-        if (!err) {
-          print.dictionaryapi(result.entry_list.entry, word, options);
-        }
-      });
-    }
-    callbackAll();
-  });
+  // request.get(SOURCE.dictionaryapi.replace('${word}', word), { timeout: 6000 }, function (
+  //   error,
+  //   response,
+  //   body,
+  // ) {
+  //   if (error) {
+  //     return callbackAll();
+  //   }
+  //   if (response.statusCode == 200) {
+  //     parseString(body, function (err, result) {
+  //       if (!err) {
+  //         print.dictionaryapi(result.entry_list.entry, word, options);
+  //       }
+  //     });
+  //   }
+  //   callbackAll();
+  // });
 };
